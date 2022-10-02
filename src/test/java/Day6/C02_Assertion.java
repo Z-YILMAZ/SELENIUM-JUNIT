@@ -1,4 +1,4 @@
-package Day3;
+package Day6;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.AfterClass;

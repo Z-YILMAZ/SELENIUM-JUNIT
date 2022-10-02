@@ -1,4 +1,4 @@
-package Day4;
+package Day7;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.After;
@@ -10,11 +10,12 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 
 import java.time.Duration;
 import java.util.List;
 
-public class C02_DropDownHandle {
+public class C03_DropDown {
     /*
 
            ●https://www.amazon.com/ adresinegidin.
@@ -26,40 +27,55 @@ public class C02_DropDownHandle {
            2.Arama kutusuna Java yazin vearatin
            3.Bulunan sonuc sayisiniyazdirin
            4.Sonucun Java kelimesini icerdigini testedin
-*/
+     */
     WebDriver driver;
+    Select select;
     @Before
     public void setup() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
-        driver.get("https://amazon.com");
+        driver.get("https://www.amazon.com/");
     }
     @After
     public void tearDown() {
         //driver.close();
     }
     @Test
-    public void test1(){
+    public void test1() {
         //Arama kutusunun yanindaki kategori menusundeki kategori sayisinin 45
         //oldugunu test edin
-        List<WebElement> drops = driver.findElements(By.xpath("//option"));
-        System.out.println(drops.size());
-        for (WebElement w:drops) {
-            System.out.println(w.getText());
-        }
-        int dropDownList = drops.size();
+        WebElement ddm = driver.findElement(By.xpath("//*[@id='searchDropdownBox']"));
+        select = new Select(ddm);
+        /*
+        Dropdown menuye ulasmak için Select classından bir obje oluştururuz
+        ve locate ettiğimiz dropdown weblementini Select classına tanımlarız
+        ve getOption methodunu kullanarak dropdown'u bir list'e atarak dropdawn menunun bütün elemanlarının
+        sayısına ulaşabiliriz
+         */
+        List<WebElement> ddmList = select.getOptions();
+        System.out.println(ddmList.size());
         int expectedSayi = 45;
-        Assert.assertNotEquals(expectedSayi,dropDownList);
+        int actualDds= ddmList.size();
+        Assert.assertNotEquals(expectedSayi,actualDds);
     }
     @Test
-    public void test2(){
+    public void test2() {
 //           1.Kategori menusunden Books secenegini secin
         WebElement ddm = driver.findElement(By.xpath("//*[@id='searchDropdownBox']"));
-        ddm.sendKeys("Books");
-//           2.Arama kutusuna Java yazin vearatin
-        driver.findElement(By.cssSelector("input[id='twotabsearchtextbox']")).sendKeys("Java", Keys.ENTER);
+        select = new Select(ddm);
+
+        //select.selectByVisibleText("Books"); // Eğer Dropdown menudeki option'a string olarak ulaşmak istersek bu methodu kullanırız
+        //select.selectByIndex(5); // Eğer dropdown menusünun index'i ile ulasmak istersek bu methodu kullanırız
+        select.selectByValue("search-alias=stripbooks-intl-ship"); // Eğer dropdown menusundeki optiona value ile ulaşmak istersek bu methodu kullanırız
+         /*
+        Dropdown menude seçtiğimiz optiona ulaşmak istersek select.getFirstSelectedOption()
+        methodunu kullanırız
+         */
+        System.out.println(select.getFirstSelectedOption().getText());
+//           2.Arama kutusuna Java yazin ve aratin
+        driver.findElement(By.id("twotabsearchtextbox")).sendKeys("Java", Keys.ENTER);
 //           3.Bulunan sonuc sayisiniyazdirin
         WebElement sonucYazisi = driver.findElement(By.xpath("//*[@class='a-section a-spacing-small a-spacing-top-small']"));
         System.out.println(sonucYazisi.getText());
@@ -68,5 +84,7 @@ public class C02_DropDownHandle {
         String actualSonucYazisi = sonucYazisi.getText();
         Assert.assertTrue(actualSonucYazisi.contains(expectedKelime));
 
+
     }
+
 }
