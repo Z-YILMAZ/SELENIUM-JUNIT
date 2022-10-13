@@ -25,10 +25,8 @@ public abstract class TestBaseBeforeAfter {
         DateTimeFormatter formater = DateTimeFormatter.ofPattern("YYMMddHHmmss");
         tarih = date.format(formater);
     }
-
     @After
     public void tearDown() {
         //driver.quit();
     }
-
 }

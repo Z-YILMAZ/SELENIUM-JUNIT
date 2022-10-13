@@ -8,7 +8,7 @@ import utilities.TestBaseBeforeAfter;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;g
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class C04_GetScreenShot extends TestBaseBeforeAfter {
